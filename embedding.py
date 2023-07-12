@@ -27,9 +27,9 @@ import sys
 import time
 
 import torch
-
+import numpy as np
 import omegafold as of
-from . import pipeline
+from omegafold import pipeline
 
 
 # =============================================================================
@@ -56,7 +56,7 @@ def main():
     model.to(args.device)
 
     logging.info(f"Reading {args.input_file}")
-    for i, (input_data, save_path, _) in enumerate(
+    for i, (input_data, _, save_path) in enumerate(
         pipeline.fasta2inputs(
             args.input_file,
             num_pseudo_msa=args.num_pseudo_msa,
@@ -80,14 +80,7 @@ def main():
         logging.info(f"Finished prediction in {time.time() - ts:.2f} seconds.")
 
         logging.info(f"Saving prediction to {save_path}")
-        pipeline.save_pdb(
-            pos14=output["final_atom_positions"],
-            b_factors=output["confidence"] * 100,
-            sequence=input_data[0]["p_msa"][0],
-            mask=input_data[0]["p_msa_mask"][0],
-            save_path=save_path,
-            model=0,
-        )
+        np.save(save_path, output["node_repr"].cpu().numpy())
         logging.info(f"Saved")
         del output
         torch.cuda.empty_cache()

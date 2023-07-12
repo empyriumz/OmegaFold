@@ -4,6 +4,7 @@ import sys
 with open("README.md", "r") as f:
     readme = f.read()
 
+
 def get_url() -> str:
     if sys.version_info[:2] == (3, 8):
         _ver = "cp38"
@@ -22,6 +23,7 @@ def get_url() -> str:
 
     return f"https://download.pytorch.org/whl/cu113/torch-1.12.0%2Bcu113-{_ver}-{_ver}-{_os}.whl"
 
+
 setup(
     name="OmegaFold",
     description="OmegaFold Release Code",
@@ -29,10 +31,11 @@ setup(
     long_description_content_type="text/markdown",
     license="Apache-2.0",
     packages=find_packages(exclude=["tests", "tests.*"]),
-    entry_points={"console_scripts": ["omegafold=omegafold.__main__:main",],},
-    install_requires=[
-        "biopython",
-        f"torch@{get_url()}"
-    ],
+    entry_points={
+        "console_scripts": [
+            "omegafold=omegafold.__main__:main",
+        ],
+    },
+    install_requires=["biopython", f"torch@{get_url()}"],
     python_requires=">=3.8",
 )
